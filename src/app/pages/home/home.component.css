@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    text-align: center; /* Center text within the container */
+
+    /* Image source: "https://storyset.com/business" Business illustrations by Storyset*/
+    background-image: url('/assets/images/Finance-amico.png'), url('/assets/images/Investment-data-rafiki.png');
+    background-size: 35%, 50%;         /* Cover the entire container */
+    background-position: left bottom, right;   /* Center the image */
+    background-repeat: no-repeat;  /* Don't repeat the image */
+  }
+  
+  .welcome-section {
+    background-color: #fff; /* White background for visual separation */
+    padding: 30px;
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+    font-size: 1.2rem;
+    background-color: rgba(255, 255, 255, 0.8); /* Add a semi-transparent background to the content */
+  }
+  
+  .welcome-title {
+    margin-bottom: 20px;
+    font-size: 3.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); 
+  }
+  
+  .welcome-subtitle {
+    color: #666; /* Lighter text color for subtitle */
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  
+  .welcome-text {
+    margin-bottom: 30px;
+  }
+  
+  .button-container{
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.1rem; /* Adjust font size as needed */
+    padding: 15px 30px; /* Adjust padding as needed */
+  }
+  

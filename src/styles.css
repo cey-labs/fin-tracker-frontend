@@ -1,4 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+    height: 100%;
+    /* Make html and body take up full viewport height */
+    margin: 0;
+    /* Remove default margins */
+}
+
+.app-container {
+    /* A wrapper for your whole app */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* At least viewport height */
+}
+
+.main-content {
+    /* Content area */
+    flex: 1;
+    /* This will make it grow to take the available space */
+}

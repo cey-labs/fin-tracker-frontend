@@ -1,0 +1,38 @@
+   .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background-color: #f5f5f5; 
+
+    /* Image source: "https://storyset.com/business" Business illustrations by Storyset*/
+    background-image: url('/assets/images/Finance-amico.png'), url('/assets/images/Investment-data-rafiki.png');
+    background-size: 35%, 50%;         /* Cover the entire container */
+    background-position: left bottom, right;   /* Center the image */
+    background-repeat: no-repeat;  /* Don't repeat the image */
+  }
+  
+  .login-card {
+    max-width: 400px;
+    padding: 30px; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); 
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  mat-card-title {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 500; 
+  }
+  
+  mat-form-field {
+    width: 100%;  
+    margin-bottom: 20px;  
+  }
+  
+  button[mat-raised-button] {
+    width: 100%; 
+    margin-top: 10px;
+  }
+  

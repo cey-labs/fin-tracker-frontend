@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { NavbarService } from '../../services/navbar-service/navbar.service';
 import { AuthService } from '../../services/auth-service/auth.service';
 
+
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -20,6 +21,7 @@ import {MatButtonModule} from '@angular/material/button';
 export class NavbarComponent implements OnInit{
   showMenuButton = false;
   toggleMenuButton = false;
+
   isLoggedIn = false; // To store login state
 
   constructor(private navBarService: NavbarService,
@@ -40,7 +42,6 @@ export class NavbarComponent implements OnInit{
     this.toggleMenuButton = ! this.toggleMenuButton;
     this.navBarService.toggleMenuButton(this.toggleMenuButton);
   }
-
   onLoginButtonClick() {
     if (this.isLoggedIn) {
       // If user is logged in, log them out

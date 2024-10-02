@@ -10,6 +10,7 @@ import { AssistantComponent } from './pages/dashboard/section/assistant/assistan
 
 import { authGuard } from './core/guards/auth-guard.guard'; // Adjust path accordingly
 
+
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default route
     { path: 'home', component: HomeComponent },
@@ -20,6 +21,7 @@ export const routes: Routes = [
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [authGuard], // Use the functional guard here
+
         children: [
             { path: '', component: AccountsComponent }, // Default route for dashboard
             { path: 'create-account', component: CreateAccountComponent },

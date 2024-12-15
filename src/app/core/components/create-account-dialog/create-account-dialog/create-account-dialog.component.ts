@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Account } from '../../../../core/models/account';
 import { AccountService } from '../../../../core/services/account.service';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
@@ -34,6 +34,7 @@ export class CreateAccountDialogComponent {
   ];
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { isEditing: boolean; account: Account },
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CreateAccountDialogComponent>,
     private authService: AuthService,
@@ -48,6 +49,12 @@ export class CreateAccountDialogComponent {
       description: [''],
       userId: [this.currentUserId]
     });
+
+    // If editing, patch form with account data
+    if (data.isEditing && data.account) {
+      this.accountForm.patchValue(data.account);
+      this.isEditing = true;
+    }
   }
 
   ngOnInit() {

@@ -11,7 +11,6 @@ import { MatTableModule } from '@angular/material/table';
 import { Account } from '../../../../core/models/account';
 import { AccountService } from '../../../../core/services/account.service';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
-
 import { CreateAccountDialogComponent } from '../../../../core/components/create-account-dialog/create-account-dialog/create-account-dialog.component';
 
 @Component({
@@ -99,8 +98,18 @@ export class AccountsComponent implements OnInit {
   }
 
   editAccount(account: Account) {
-    this.isEditing = true;
-    this.accountForm.patchValue(account);
+    const dialogRef = this.dialog.open(CreateAccountDialogComponent, {
+      width: '400px',
+      data: {
+        isEditing: true,
+        account: account
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+        this.loadAccounts();
+    });
   }
 
   async deleteAccount(id: string) {

@@ -1,4 +1,16 @@
-.dialog-actions {
+.account-form {
   display: flex;
-  justify-content: flex-end; 
+  flex-direction: column;
+  gap: 16px;
+  min-width: 400px;
+  padding: 16px 0;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  padding: 16px 0;
+  margin: 0;
 }

@@ -1,5 +1,9 @@
 .transactions-container {
   padding: 20px;
+  height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .transactions-header {
@@ -7,10 +11,13 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  background-color: white;
 }
 
 .transactions-table-container {
-  margin-top: 20px;
+  flex: 1;
+  overflow: auto;
+  background-color: white;
 }
 
 .transactions-table {
@@ -24,6 +31,10 @@
 .mat-mdc-header-cell {
   font-weight: bold;
   color: rgba(0, 0, 0, 0.87);
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .mat-mdc-cell, .mat-mdc-header-cell {
@@ -54,4 +65,8 @@
 .cancelled {
   background-color: #f44336;
   color: white;
+}
+
+.mat-mdc-cell button + button {
+  margin-left: 8px;
 }

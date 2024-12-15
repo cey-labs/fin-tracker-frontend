@@ -1,11 +1,10 @@
 <div class="accounts-container">
   <div class="accounts-header">
     <h1>Accounts</h1>
+    <button mat-raised-button color="primary" (click)="openCreateAccountDialog()">
+      Add Account
+    </button>
   </div>
-
-  <button mat-raised-button color="primary" aria-label="Create account" matTooltip="Create a new account" (click)="openCreateAccountDialog()">
-    Create Account
-  </button>
 
   <!-- Accounts Table -->
   <div class="accounts-table-container">
@@ -25,7 +24,9 @@
       <!-- Balance Column -->
       <ng-container matColumnDef="balance">
         <th mat-header-cell *matHeaderCellDef>Balance</th>
-        <td mat-cell *matCellDef="let account">{{account.balance | currency:account.currency}}</td>
+        <td mat-cell *matCellDef="let account" [ngClass]="{'negative': account.balance < 0}">
+          {{account.balance | currency:account.currency}}
+        </td>
       </ng-container>
 
       <!-- Currency Column -->

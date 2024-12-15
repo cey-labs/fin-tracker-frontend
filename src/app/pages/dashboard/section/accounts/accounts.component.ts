@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -32,35 +32,15 @@ import { CreateAccountDialogComponent } from '../../../../core/components/create
   styleUrl: './accounts.component.css'
 })
 export class AccountsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'type', 'balance', 'currency', 'description', 'actions'];
   accounts: Account[] = [];
-  accountForm: FormGroup;
-  isEditing = false;
   currentUserId = '';
-
-  accountTypes = [
-    { value: 'savings', label: 'Savings' },
-    { value: 'checking', label: 'Checking' },
-    { value: 'credit', label: 'Credit' },
-    { value: 'investment', label: 'Investment' }
-  ];
+  displayedColumns: string[] = ['name', 'type', 'balance', 'currency', 'description', 'actions'];
 
   constructor(
     private accountService: AccountService,
-    private fb: FormBuilder,
     private authService: AuthService,
     private dialog: MatDialog
-  ) {
-    this.accountForm = this.fb.group({
-      id: [''],
-      name: ['', Validators.required],
-      type: ['', Validators.required],
-      balance: [0, [Validators.required, Validators.min(0)]],
-      currency: ['USD', Validators.required],
-      description: [''],
-      userId: [this.currentUserId]
-    });
-  }
+  ) {}
 
   ngOnInit() {
     this.authService.authState$.subscribe(user => {
@@ -72,43 +52,41 @@ export class AccountsComponent implements OnInit {
   }
 
   async loadAccounts() {
-    console.log(this.currentUserId);
     this.accounts = await this.accountService.getAccountsByUserId(this.currentUserId);
-    console.log(this.accounts);
   }
 
-  async onSubmit() {
-    if (this.accountForm.valid) {
-      const accountData = {
-        ...this.accountForm.value,
-        userId: this.currentUserId
-      };
-
-      if (this.isEditing) {
-        const id = accountData.id;
-        delete accountData.id;
-        await this.accountService.updateAccount(id, accountData);
-      } else {
-        await this.accountService.createAccount(accountData);
-      }
-
-      this.resetForm();
-      await this.loadAccounts();
-    }
-  }
-
-  editAccount(account: Account) {
+  openCreateAccountDialog(): void {
     const dialogRef = this.dialog.open(CreateAccountDialogComponent, {
-      width: '400px',
+      width: '500px',
       data: {
-        isEditing: true,
-        account: account
+        isEditing: false,
+        userId: this.currentUserId
       },
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
         this.loadAccounts();
+      }
+    });
+  }
+
+  editAccount(account: Account) {
+    const dialogRef = this.dialog.open(CreateAccountDialogComponent, {
+      width: '500px',
+      data: {
+        isEditing: true,
+        account: account,
+        userId: this.currentUserId
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadAccounts();
+      }
     });
   }
 
@@ -117,20 +95,5 @@ export class AccountsComponent implements OnInit {
       await this.accountService.deleteAccount(id);
       await this.loadAccounts();
     }
-  }
-
-  resetForm() {
-    this.isEditing = false;
-    this.accountForm.reset({
-      currency: 'USD'
-    });
-  }
-
-  openCreateAccountDialog(): void {
-    this.dialog.open(CreateAccountDialogComponent, {
-      width: '300px',
-      data: { /* pass data to the dialog here if needed */ },
-      disableClose: true
-    });
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -11,11 +11,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Transaction } from '../../../../core/models/transaction';
 import { Account } from '../../../../core/models/account';
 import { TransactionService } from '../../../../core/services/transaction.service';
 import { AccountService } from '../../../../core/services/account.service';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
+import { CreateTransactionDialogComponent } from '../../../../core/components/create-transaction-dialog/create-transaction-dialog.component';
 
 @Component({
   selector: 'app-transactions',
@@ -33,7 +35,8 @@ import { AuthService } from '../../../../core/services/auth-service/auth.service
     MatNativeDateModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatDialogModule
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css'
@@ -41,47 +44,15 @@ import { AuthService } from '../../../../core/services/auth-service/auth.service
 export class TransactionsComponent implements OnInit {
   transactions: Transaction[] = [];
   accounts: Account[] = [];
-  transactionForm: FormGroup;
-  isEditing = false;
   currentUserId = '';
-
   displayedColumns: string[] = ['date', 'type', 'amount', 'category', 'account', 'description', 'status', 'actions'];
-
-  transactionTypes = [
-    { value: 'income', label: 'Income' },
-    { value: 'expense', label: 'Expense' },
-    { value: 'transfer', label: 'Transfer' }
-  ];
-
-  categories = [
-    { value: 'salary', label: 'Salary' },
-    { value: 'food', label: 'Food & Dining' },
-    { value: 'shopping', label: 'Shopping' },
-    { value: 'transport', label: 'Transportation' },
-    { value: 'utilities', label: 'Utilities' },
-    { value: 'entertainment', label: 'Entertainment' },
-    { value: 'health', label: 'Healthcare' },
-    { value: 'other', label: 'Other' }
-  ];
 
   constructor(
     private transactionService: TransactionService,
     private accountService: AccountService,
     private authService: AuthService,
-    private fb: FormBuilder
-  ) {
-    this.transactionForm = this.fb.group({
-      id: [''],
-      accountId: ['', Validators.required],
-      type: ['', Validators.required],
-      amount: [0, [Validators.required, Validators.min(0.01)]],
-      description: ['', Validators.required],
-      category: ['', Validators.required],
-      date: [new Date(), Validators.required],
-      payee: [''],
-      status: ['completed', Validators.required]
-    });
-  }
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.authService.authState$.subscribe(user => {
@@ -101,31 +72,40 @@ export class TransactionsComponent implements OnInit {
     this.transactions = await this.transactionService.getTransactionsByUserId(this.currentUserId);
   }
 
-  async onSubmit() {
-    if (this.transactionForm.valid) {
-      const transactionData = {
-        ...this.transactionForm.value,
+  openCreateTransactionDialog(): void {
+    const dialogRef = this.dialog.open(CreateTransactionDialogComponent, {
+      width: '500px',
+      data: {
+        isEditing: false,
+        accounts: this.accounts,
         userId: this.currentUserId
-      };
+      },
+      disableClose: true
+    });
 
-      if (this.isEditing) {
-        const id = transactionData.id;
-        delete transactionData.id;
-        await this.transactionService.updateTransaction(id, transactionData);
-      } else {
-        await this.transactionService.createTransaction(transactionData);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTransactions();
       }
-
-      this.resetForm();
-      await this.loadTransactions();
-    }
+    });
   }
 
   editTransaction(transaction: Transaction) {
-    this.isEditing = true;
-    this.transactionForm.patchValue({
-      ...transaction,
-      date: new Date(transaction.date)
+    const dialogRef = this.dialog.open(CreateTransactionDialogComponent, {
+      width: '500px',
+      data: {
+        isEditing: true,
+        transaction: transaction,
+        accounts: this.accounts,
+        userId: this.currentUserId
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTransactions();
+      }
     });
   }
 
@@ -134,14 +114,6 @@ export class TransactionsComponent implements OnInit {
       await this.transactionService.deleteTransaction(id);
       await this.loadTransactions();
     }
-  }
-
-  resetForm() {
-    this.isEditing = false;
-    this.transactionForm.reset({
-      date: new Date(),
-      status: 'completed'
-    });
   }
 
   getAccountName(accountId: string): string {

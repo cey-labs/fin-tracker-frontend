@@ -7,9 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 import { Account } from '../../../../core/models/account';
 import { AccountService } from '../../../../core/services/account.service';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
+
+import { CreateAccountDialogComponent } from '../../../../core/components/create-account-dialog/create-account-dialog/create-account-dialog.component';
 
 @Component({
   selector: 'app-accounts',
@@ -23,12 +26,14 @@ import { AuthService } from '../../../../core/services/auth-service/auth.service
     MatInputModule,
     MatSelectModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTableModule
   ],
   templateUrl: './accounts.component.html',
   styleUrl: './accounts.component.css'
 })
 export class AccountsComponent implements OnInit {
+  displayedColumns: string[] = ['name', 'type', 'balance', 'currency', 'description', 'actions'];
   accounts: Account[] = [];
   accountForm: FormGroup;
   isEditing = false;
@@ -44,7 +49,8 @@ export class AccountsComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {
     this.accountForm = this.fb.group({
       id: [''],
@@ -108,6 +114,14 @@ export class AccountsComponent implements OnInit {
     this.isEditing = false;
     this.accountForm.reset({
       currency: 'USD'
+    });
+  }
+
+  openCreateAccountDialog(): void {
+    this.dialog.open(CreateAccountDialogComponent, {
+      width: '300px',
+      data: { /* pass data to the dialog here if needed */ },
+      disableClose: true
     });
   }
 }

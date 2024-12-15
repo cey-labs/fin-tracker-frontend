@@ -1,74 +1,60 @@
 <div class="accounts-container">
-  <!-- Account Form -->
-  <mat-card class="form-card">
-    <mat-card-header>
-      <mat-card-title>{{ isEditing ? 'Edit Account' : 'Add New Account' }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="account-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Account Name</mat-label>
-          <input matInput formControlName="name" placeholder="Enter account name">
-        </mat-form-field>
+  <div class="accounts-header">
+    <h1>Accounts</h1>
+  </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Account Type</mat-label>
-          <mat-select formControlName="type">
-            <mat-option *ngFor="let type of accountTypes" [value]="type.value">
-              {{type.label}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+  <button mat-raised-button color="primary" aria-label="Create account" matTooltip="Create a new account" (click)="openCreateAccountDialog()">
+    Create Account
+  </button>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Balance</mat-label>
-          <input matInput type="number" formControlName="balance" placeholder="Enter balance">
-        </mat-form-field>
+  <!-- Accounts Table -->
+  <div class="accounts-table-container">
+    <table mat-table [dataSource]="accounts" class="accounts-table">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let account">{{account.name}}</td>
+      </ng-container>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Currency</mat-label>
-          <input matInput formControlName="currency" placeholder="Enter currency">
-        </mat-form-field>
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let account">{{account.type | titlecase}}</td>
+      </ng-container>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" placeholder="Enter description"></textarea>
-        </mat-form-field>
+      <!-- Balance Column -->
+      <ng-container matColumnDef="balance">
+        <th mat-header-cell *matHeaderCellDef>Balance</th>
+        <td mat-cell *matCellDef="let account">{{account.balance | currency:account.currency}}</td>
+      </ng-container>
 
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!accountForm.valid">
-            {{ isEditing ? 'Update' : 'Add' }} Account
-          </button>
-          <button mat-button type="button" (click)="resetForm()" *ngIf="isEditing">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      <!-- Currency Column -->
+      <ng-container matColumnDef="currency">
+        <th mat-header-cell *matHeaderCellDef>Currency</th>
+        <td mat-cell *matCellDef="let account">{{account.currency}}</td>
+      </ng-container>
 
-  <!-- Accounts List -->
-  <div class="accounts-list">
-    <h2>Your Accounts</h2>
-    <div class="accounts-grid">
-      <mat-card *ngFor="let account of accounts" class="account-card">
-        <mat-card-header>
-          <mat-card-title>{{account.name}}</mat-card-title>
-          <mat-card-subtitle>{{account.type | titlecase}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p class="balance">{{account.balance | currency:account.currency}}</p>
-          <p class="description" *ngIf="account.description">{{account.description}}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-icon-button color="primary" (click)="editAccount(account)">
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let account">{{account.description}}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let account">
+          <button mat-icon-button color="primary" (click)="editAccount(account)" matTooltip="Edit account">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteAccount(account.id!)">
+          <button mat-icon-button color="warn" (click)="deleteAccount(account.id!)" matTooltip="Delete account">
             <mat-icon>delete</mat-icon>
           </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
   </div>
 </div>
